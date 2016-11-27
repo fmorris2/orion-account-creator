@@ -1,30 +1,34 @@
 package org;
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
-import org.proxy.GimmeProxy;
 import org.sikuli.api.DesktopScreenRegion;
-import org.sikuli.api.ImageTarget;
 import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.Target;
+import org.sikuli.api.robot.Mouse;
+import org.sikuli.api.robot.desktop.DesktopKeyboard;
+import org.sikuli.api.robot.desktop.DesktopMouse;
 import org.worker.Worker;
-import org.worker.Workers;
+import org.worker.impl.sockscap.OpenSocksCap;
 
 public class AccountCreator
 {
-	private Worker currentWorker = Workers.ROOT;
+	public static final int GENERAL_WAIT_TIME = 2000;
 
-	public static String email, displayName, password;
-	public static Process socksCap, nxt;
+	public static ScreenRegion screen = new DesktopScreenRegion();
+	public static Mouse mouse = new DesktopMouse();
+	public static DesktopKeyboard keyboard = new DesktopKeyboard();
+	
+	public static String email, password;
+	public static Process socksCap;
+	
+	private Worker currentWorker;
 	
 	public AccountCreator()
 	{
+		currentWorker = new OpenSocksCap();
+		
 		email = null;
-		displayName = null;
 		password = null;
 		socksCap = null;
-		nxt = null;
 	}
 	
 	public boolean create()
@@ -49,7 +53,7 @@ public class AccountCreator
 	
 	public void storeLocally()
 	{
-		
+		new AccountRecorder().recordAccount(email, password);
 	}
 	
 	public void killProcesses()
@@ -57,33 +61,12 @@ public class AccountCreator
 		if(socksCap != null)
 			socksCap.destroy();
 		
-		if(nxt != null)
-			nxt.destroy();
-	}
-	
-	//junk test method -- will be removed
-	public void test()
-	{
-		GimmeProxy testProxy = new GimmeProxy();
-		if(!testProxy.grabInfo())
-		{
-			System.out.println("Failed to grab proxy info...");
-			return;
-		}
-		
-		System.out.println("Proxy IP: " + testProxy.getIp() + ", Port: " + testProxy.getPort());
-		ScreenRegion test = new DesktopScreenRegion();
-		System.out.println("width: " + test.getBounds().getWidth() + ", height: " + test.getBounds().getHeight());
 		try
 		{
-			Target imageTarget = new ImageTarget(new File("images/Vikings.jpg").toURI().toURL());
-			ScreenRegion result = test.wait(imageTarget, 1000);
-			if(result == null)
-				System.out.println("Image not found");
-			else
-				System.out.println("Image found");
+			Runtime.getRuntime().exec("taskkill /F /IM RuneScape.exe");
+			Runtime.getRuntime().exec("taskkill /F /IM rs2client.exe");
 		}
-		catch(MalformedURLException e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}

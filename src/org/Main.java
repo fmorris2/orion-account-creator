@@ -26,7 +26,7 @@ public class Main
 			
 			c.killProcesses();
 			
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		}
 	}
 	
