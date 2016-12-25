@@ -10,10 +10,12 @@ import org.worker.impl.nxt.CreateAccount;
 
 public class OpenNxt implements Worker
 {
-	private static final int NXT_WAIT_TIME = 10000;
+	private static final int NXT_WAIT_TIME = 20000;
+	private static final int FAILED_WAIT_TIME = 7500;
 	
 	private Target nxtIconTarg = new ImageTarget(Utils.fileUrl("images/nxtIcon.png"));
 	private Target nxtClientTarg = new ImageTarget(Utils.fileUrl("images/nxtClient.png"));
+	private Target failedTarg = new ImageTarget(Utils.fileUrl("images/proxyFailed.png"));
 	
 	@Override
 	public void execute()
@@ -28,6 +30,10 @@ public class OpenNxt implements Worker
 	@Override
 	public Worker branch()
 	{
+		ScreenRegion failed = AccountCreator.screen.wait(failedTarg, FAILED_WAIT_TIME);
+		if(failed != null)
+			return null;
+		
 		ScreenRegion nxtClient = AccountCreator.screen.wait(nxtClientTarg, NXT_WAIT_TIME);
 		
 		return nxtClient != null ? new CreateAccount() : null;

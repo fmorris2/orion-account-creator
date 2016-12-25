@@ -19,7 +19,10 @@ public class Main
 				if(c.report())
 					System.out.println("Successfully stored account in database");
 				else
+				{
+					System.out.println("Storing account locally");
 					c.storeLocally();
+				}
 			}
 			else
 				System.out.println("Failed to create account");

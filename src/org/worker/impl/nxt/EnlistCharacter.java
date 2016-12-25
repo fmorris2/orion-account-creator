@@ -13,12 +13,14 @@ import org.worker.Worker;
 public class EnlistCharacter implements Worker
 {
 	private static final int LOBBY_WAIT_TIME = 15000;
+	private static final int FAIL_WAIT_TIME = 5000;
 	
 	private Target randomNameButton = new ImageTarget(Utils.fileUrl("images/randomName.png"));
 	private Target ageLabel = new ImageTarget(Utils.fileUrl("images/age.png"));
 	private Target emailLabel = new ImageTarget(Utils.fileUrl("images/email.png"));
 	private Target passwordLabel = new ImageTarget(Utils.fileUrl("images/password.png"));
 	private Target playNowButton = new ImageTarget(Utils.fileUrl("images/playNow.png"));
+	private Target failureLabel = new ImageTarget(Utils.fileUrl("images/cooldown.png"));
 	private Target lobbyLabel = new ImageTarget(Utils.fileUrl("images/lobby.png"));
 	
 	private boolean success;
@@ -28,6 +30,7 @@ public class EnlistCharacter implements Worker
 	public void execute()
 	{
 		//Randomize displayName
+		randomNameButton.setMinScore(0.95);
 		ScreenRegion randomName = AccountCreator.screen.wait(randomNameButton, AccountCreator.GENERAL_WAIT_TIME);
 		if(randomName == null)
 			return;
@@ -46,7 +49,10 @@ public class EnlistCharacter implements Worker
 		
 		//verify account has been created
 		ScreenRegion lobby = AccountCreator.screen.wait(lobbyLabel, LOBBY_WAIT_TIME);
-		if(lobby != null)
+		ScreenRegion failure = AccountCreator.screen.wait(failureLabel, FAIL_WAIT_TIME);
+		if(failure != null)
+			AccountCreator.onCooldown = true;
+		else if(lobby != null)
 		{
 			success = true;
 			AccountCreator.email = account.getEmail();
@@ -67,7 +73,11 @@ public class EnlistCharacter implements Worker
 			return false;
 		
 		ScreenLocation toClick = Relative.to(r.getCenter()).right(90).getScreenLocation();
-		AccountCreator.mouse.click(toClick);
+		AccountCreator.mouse.doubleClick(toClick);
+		
+		try	{ Thread.sleep(450); }
+		catch(InterruptedException e) { e.printStackTrace(); }
+		
 		AccountCreator.keyboard.type(s);
 		return true;
 	}
