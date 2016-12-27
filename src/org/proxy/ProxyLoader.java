@@ -1,15 +1,16 @@
 package org.proxy;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class ProxyLoader
 {
-	private static final String DIR = "proxies.txt";
+	private static final String DIR = "/org/proxies.txt";
 	
-	private Queue<Proxy> proxies = new LinkedList<>();
+	private Queue<Subnet> subnets = new LinkedList<>(); 
+	private Subnet currentSubnet;
 	
 	public ProxyLoader()
 	{
@@ -18,16 +19,26 @@ public class ProxyLoader
 	
 	public Proxy getProxy()
 	{
-		Proxy p = proxies.poll();
-		proxies.add(p);
-		return p;
+		for(int i = 0; i < subnets.size(); i++)
+		{
+			Subnet s = subnets.poll();
+			subnets.add(s);
+			currentSubnet = s;
+			
+			Proxy p = s.getProxy();
+			if(p != null)
+				return p;
+		}
+		return null;
 	}
 	
 	private void loadProxies()
 	{
+		int totalProxies = 0;
+		
 		try
 		(
-			FileReader fr = new FileReader(DIR);
+			InputStreamReader fr = new InputStreamReader(this.getClass().getResourceAsStream(DIR));
 			BufferedReader br = new BufferedReader(fr);
 		)
 		{
@@ -35,12 +46,34 @@ public class ProxyLoader
 			while((line = br.readLine()) != null)
 			{
 				String[] parts = line.split(":");
-				proxies.add(new Proxy(parts[0], parts[1]));
+				addProxy(new Proxy(parts[0], parts[1]));
+				totalProxies++;
 			}
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+		
+		System.out.println("Loaded " + totalProxies + " proxies on " + subnets.size() + " different subnets");
+	}
+	
+	private void addProxy(Proxy p)
+	{
+		boolean success = false;
+		for(Subnet s : subnets)
+			if(s.addProxy(p))
+				success = true;
+		
+		if(!success)
+		{
+			subnets.add(new Subnet());
+			addProxy(p);
+		}
+	}
+	
+	public Subnet getCurrentSubnet()
+	{
+		return currentSubnet;
 	}
 }

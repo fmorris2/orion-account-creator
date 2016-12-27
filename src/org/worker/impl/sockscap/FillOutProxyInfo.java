@@ -1,21 +1,19 @@
 package org.worker.impl.sockscap;
 
+import java.awt.image.BufferedImage;
+
 import org.AccountCreator;
 import org.Utils;
 import org.proxy.Proxy;
-import org.sikuli.api.DefaultScreenLocation;
-import org.sikuli.api.ImageTarget;
 import org.sikuli.api.Relative;
-import org.sikuli.api.ScreenLocation;
 import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.Target;
 import org.worker.Worker;
 
 public class FillOutProxyInfo implements Worker
 {	
-	private Target targ = new ImageTarget(Utils.fileUrl("images/proxyRowIcon.png"));
+	private static BufferedImage targ = Utils.websiteUrl("proxyRowIcon.png");
 	//private Target portXTarg = new ImageTarget(Utils.fileUrl("images/proxyPortX.png"));
-	private Target proxySaveTarg = new ImageTarget(Utils.fileUrl("images/proxySaveButton.png"));
+	private static BufferedImage proxySaveTarg = Utils.websiteUrl("proxySaveButton.png");
 	
 	private boolean success;
 	
@@ -23,10 +21,9 @@ public class FillOutProxyInfo implements Worker
 	public void execute()
 	{
 		System.out.println("Fill out proxy info");
-		targ.setMinScore(0.8);
-		ScreenRegion rowIcon = AccountCreator.screen.wait(targ, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion rowIcon = Utils.waitFor(targ, AccountCreator.GENERAL_WAIT_TIME, 0.8);
 		//ScreenRegion proxyPortX = AccountCreator.screen.wait(portXTarg, AccountCreator.GENERAL_WAIT_TIME);
-		ScreenRegion saveButton = AccountCreator.screen.wait(proxySaveTarg, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion saveButton = Utils.waitFor(proxySaveTarg, AccountCreator.GENERAL_WAIT_TIME);
 		
 		if(rowIcon == null /*|| proxyPortX == null */|| saveButton == null)
 			return;	
@@ -38,6 +35,21 @@ public class FillOutProxyInfo implements Worker
 		*/
 		
 		Proxy proxy = AccountCreator.proxies.getProxy();
+		while(proxy == null)
+		{
+			try
+			{
+				System.out.println("All subnets are on cooldown... Attempting again in 5 seconds");
+				Thread.sleep(5000);
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			
+			proxy = AccountCreator.proxies.getProxy();
+		}
+
 		
 		//IP
 		ScreenRegion ipBox = Relative.to(rowIcon).right(50).getScreenRegion();

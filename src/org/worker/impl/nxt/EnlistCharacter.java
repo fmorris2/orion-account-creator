@@ -1,27 +1,27 @@
 package org.worker.impl.nxt;
 
+import java.awt.image.BufferedImage;
+
 import org.AccountCreator;
 import org.RunescapeAccount;
 import org.Utils;
-import org.sikuli.api.ImageTarget;
 import org.sikuli.api.Relative;
 import org.sikuli.api.ScreenLocation;
 import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.Target;
 import org.worker.Worker;
 
 public class EnlistCharacter implements Worker
 {
 	private static final int LOBBY_WAIT_TIME = 15000;
-	private static final int FAIL_WAIT_TIME = 5000;
+	private static final int FAIL_WAIT_TIME = 2000;
 	
-	private Target randomNameButton = new ImageTarget(Utils.fileUrl("images/randomName.png"));
-	private Target ageLabel = new ImageTarget(Utils.fileUrl("images/age.png"));
-	private Target emailLabel = new ImageTarget(Utils.fileUrl("images/email.png"));
-	private Target passwordLabel = new ImageTarget(Utils.fileUrl("images/password.png"));
-	private Target playNowButton = new ImageTarget(Utils.fileUrl("images/playNow.png"));
-	private Target failureLabel = new ImageTarget(Utils.fileUrl("images/cooldown.png"));
-	private Target lobbyLabel = new ImageTarget(Utils.fileUrl("images/lobby.png"));
+	private static BufferedImage randomNameButton = Utils.websiteUrl("randomName.png");
+	private static BufferedImage ageLabel = Utils.websiteUrl("age.png");
+	private static BufferedImage emailLabel = Utils.websiteUrl("email.png");
+	private static BufferedImage passwordLabel = Utils.websiteUrl("password.png");
+	private static BufferedImage playNowButton = Utils.websiteUrl("playNow.png");
+	private static BufferedImage failureLabel = Utils.websiteUrl("cooldown.png");
+	private static BufferedImage lobbyLabel = Utils.websiteUrl("lobby.png");
 	
 	private boolean success;
 	private RunescapeAccount account = new RunescapeAccount();
@@ -30,8 +30,7 @@ public class EnlistCharacter implements Worker
 	public void execute()
 	{
 		//Randomize displayName
-		randomNameButton.setMinScore(0.95);
-		ScreenRegion randomName = AccountCreator.screen.wait(randomNameButton, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion randomName = Utils.waitFor(randomNameButton, AccountCreator.GENERAL_WAIT_TIME, 0.95);
 		if(randomName == null)
 			return;
 		AccountCreator.mouse.click(randomName.getCenter());
@@ -42,16 +41,19 @@ public class EnlistCharacter implements Worker
 			return;
 		
 		//click done
-		ScreenRegion playNow = AccountCreator.screen.wait(playNowButton, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion playNow = Utils.waitFor(playNowButton, AccountCreator.GENERAL_WAIT_TIME);
 		if(playNow == null)
 			return;
 		AccountCreator.mouse.click(playNow.getCenter());
 		
 		//verify account has been created
-		ScreenRegion lobby = AccountCreator.screen.wait(lobbyLabel, LOBBY_WAIT_TIME);
-		ScreenRegion failure = AccountCreator.screen.wait(failureLabel, FAIL_WAIT_TIME);
+		ScreenRegion lobby = Utils.waitFor(lobbyLabel, LOBBY_WAIT_TIME);
+		ScreenRegion failure = Utils.waitFor(failureLabel, FAIL_WAIT_TIME);
 		if(failure != null)
-			AccountCreator.onCooldown = true;
+		{
+			System.out.println("Putting " + AccountCreator.proxies.getCurrentSubnet() + " on cooldown");
+			AccountCreator.proxies.getCurrentSubnet().cooldown();
+		}
 		else if(lobby != null)
 		{
 			success = true;
@@ -66,9 +68,9 @@ public class EnlistCharacter implements Worker
 		return success ? this : null;
 	}
 	
-	private boolean fill(Target t, String s)
+	private boolean fill(BufferedImage t, String s)
 	{
-		ScreenRegion r = AccountCreator.screen.wait(t, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion r = Utils.waitFor(t, AccountCreator.GENERAL_WAIT_TIME);
 		if(r == null)
 			return false;
 		

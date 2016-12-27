@@ -1,10 +1,10 @@
 package org.worker.impl.sockscap;
 
+import java.awt.image.BufferedImage;
+
 import org.AccountCreator;
 import org.Utils;
-import org.sikuli.api.ImageTarget;
 import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.Target;
 import org.worker.Worker;
 import org.worker.impl.nxt.CreateAccount;
 
@@ -13,14 +13,14 @@ public class OpenNxt implements Worker
 	private static final int NXT_WAIT_TIME = 20000;
 	private static final int FAILED_WAIT_TIME = 7500;
 	
-	private Target nxtIconTarg = new ImageTarget(Utils.fileUrl("images/nxtIcon.png"));
-	private Target nxtClientTarg = new ImageTarget(Utils.fileUrl("images/nxtClient.png"));
-	private Target failedTarg = new ImageTarget(Utils.fileUrl("images/proxyFailed.png"));
+	private static BufferedImage nxtIconTarg = Utils.websiteUrl("nxtIcon.png");
+	private static BufferedImage nxtClientTarg = Utils.websiteUrl("nxtClient.png");
+	private static BufferedImage failedTarg = Utils.websiteUrl("proxyFailed.png");
 	
 	@Override
 	public void execute()
 	{
-		ScreenRegion nxtIcon = AccountCreator.screen.wait(nxtIconTarg, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion nxtIcon = Utils.waitFor(nxtIconTarg, AccountCreator.GENERAL_WAIT_TIME);
 		if(nxtIcon == null)
 			return;
 		
@@ -30,11 +30,11 @@ public class OpenNxt implements Worker
 	@Override
 	public Worker branch()
 	{
-		ScreenRegion failed = AccountCreator.screen.wait(failedTarg, FAILED_WAIT_TIME);
+		ScreenRegion failed = Utils.waitFor(failedTarg, FAILED_WAIT_TIME);
 		if(failed != null)
 			return null;
 		
-		ScreenRegion nxtClient = AccountCreator.screen.wait(nxtClientTarg, NXT_WAIT_TIME);
+		ScreenRegion nxtClient = Utils.waitFor(nxtClientTarg, NXT_WAIT_TIME);
 		
 		return nxtClient != null ? new CreateAccount() : null;
 	}

@@ -1,6 +1,6 @@
 package org;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class NameGenerator
 {
-	private final String DICTIONARY_PATH = "dictionary.txt";
+	private final String DICTIONARY_PATH = "/org/dictionary.txt";
 	
 	private int length;
 	private int minimumNumbers;
@@ -42,7 +42,7 @@ public class NameGenerator
 	{
 		try
 		{
-			FileReader fr = new FileReader(DICTIONARY_PATH);
+			InputStreamReader fr = new InputStreamReader(this.getClass().getResourceAsStream(DICTIONARY_PATH));
 			BufferedReader in = new BufferedReader(fr);
 
 			String inputLine;

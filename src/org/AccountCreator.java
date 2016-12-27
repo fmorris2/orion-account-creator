@@ -13,7 +13,6 @@ import org.worker.impl.sockscap.ClickProxyButton;
 public class AccountCreator
 {
 	public static final int GENERAL_WAIT_TIME = 2000;
-	private static final int COOLDOWN_TIME = 15 * (60 * 1000);
 	
 	public static ScreenRegion screen = new DesktopScreenRegion();
 	public static Mouse mouse = new DesktopMouse();
@@ -22,7 +21,6 @@ public class AccountCreator
 	public static String email, password;
 	public static Process socksCap;
 	public static ProxyLoader proxies = new ProxyLoader();
-	public static boolean onCooldown;
 	
 	private Worker currentWorker;
 	
@@ -36,21 +34,7 @@ public class AccountCreator
 	}
 	
 	public boolean create()
-	{
-		if(onCooldown)
-		{
-			try
-			{
-				System.out.println("Needs to wait for subnet cooldown.... Waiting " + (COOLDOWN_TIME / 60000) + " minutes");
-				Thread.sleep(COOLDOWN_TIME);
-				onCooldown = false;
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		
+	{		
 		while(currentWorker != null)
 		{	
 			if(email != null)

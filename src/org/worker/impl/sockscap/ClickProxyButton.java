@@ -1,5 +1,7 @@
 package org.worker.impl.sockscap;
 
+import java.awt.image.BufferedImage;
+
 import org.AccountCreator;
 import org.Utils;
 import org.sikuli.api.ImageTarget;
@@ -11,7 +13,7 @@ import org.worker.Worker;
 
 public class ClickProxyButton implements Worker
 {
-	private Target targ = new ImageTarget(Utils.fileUrl("images/proxyButton.png"));
+	private static BufferedImage targ = Utils.websiteUrl("proxyButton.png");
 	
 	@Override
 	public void execute()
@@ -21,8 +23,7 @@ public class ClickProxyButton implements Worker
 	public Worker branch()
 	{
 		System.out.println("Searching for proxy button...");
-		targ.setMinScore(0.8);
-		ScreenRegion result = AccountCreator.screen.wait(targ, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion result = Utils.waitFor(targ, AccountCreator.GENERAL_WAIT_TIME, 0.8);
 		
 		if(result != null && clickProxyButton(result))
 			return new FillOutProxyInfo();
@@ -36,7 +37,7 @@ public class ClickProxyButton implements Worker
 		Mouse mouse = new DesktopMouse();
 		mouse.click(region.getCenter());
 		
-		Target proxyWindow = new ImageTarget(Utils.fileUrl("images/proxyWindow.png"));
+		Target proxyWindow = new ImageTarget(Utils.websiteUrl("proxyWindow.png"));
 		
 		return AccountCreator.screen.wait(proxyWindow, AccountCreator.GENERAL_WAIT_TIME) != null;
 	}
