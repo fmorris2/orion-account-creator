@@ -4,9 +4,7 @@ import java.awt.image.BufferedImage;
 
 import org.AccountCreator;
 import org.Utils;
-import org.sikuli.api.ImageTarget;
 import org.sikuli.api.ScreenRegion;
-import org.sikuli.api.Target;
 import org.sikuli.api.robot.Mouse;
 import org.sikuli.api.robot.desktop.DesktopMouse;
 import org.worker.Worker;
@@ -14,6 +12,7 @@ import org.worker.Worker;
 public class ClickProxyButton implements Worker
 {
 	private static BufferedImage targ = Utils.websiteUrl("proxyButton.png");
+	private static BufferedImage proxyWindow = Utils.websiteUrl("proxyWindow.png");
 	
 	@Override
 	public void execute()
@@ -37,9 +36,7 @@ public class ClickProxyButton implements Worker
 		Mouse mouse = new DesktopMouse();
 		mouse.click(region.getCenter());
 		
-		Target proxyWindow = new ImageTarget(Utils.websiteUrl("proxyWindow.png"));
-		
-		return AccountCreator.screen.wait(proxyWindow, AccountCreator.GENERAL_WAIT_TIME) != null;
+		return Utils.waitFor(proxyWindow, AccountCreator.GENERAL_WAIT_TIME) != null;
 	}
 
 }

@@ -1,5 +1,6 @@
 package org.worker.impl.sockscap;
 
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import org.AccountCreator;
@@ -52,12 +53,21 @@ public class FillOutProxyInfo implements Worker
 
 		
 		//IP
-		ScreenRegion ipBox = Relative.to(rowIcon).right(50).getScreenRegion();
-		AccountCreator.mouse.click(ipBox.getCenter()); //click on it
-		AccountCreator.mouse.doubleClick(ipBox.getCenter()); //get box in input mode
-		AccountCreator.mouse.doubleClick(ipBox.getCenter()); //highlight all text
-		AccountCreator.keyboard.type(proxy.getIP());
-		
+		try
+		{
+			ScreenRegion ipBox = Relative.to(rowIcon).right(50).getScreenRegion();
+			AccountCreator.mouse.click(ipBox.getCenter()); //click on it
+			AccountCreator.mouse.doubleClick(ipBox.getCenter()); //get box in input mode
+			AccountCreator.keyboard.keyDown(KeyEvent.VK_CONTROL);
+			AccountCreator.keyboard.keyDown(KeyEvent.VK_A);
+			AccountCreator.keyboard.keyUp(KeyEvent.VK_A);
+			AccountCreator.keyboard.keyUp(KeyEvent.VK_CONTROL);
+			AccountCreator.keyboard.type(proxy.getIP());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		//PORT
 		/*
 		ScreenLocation portLoc = new DefaultScreenLocation(AccountCreator.screen.getScreen(), 

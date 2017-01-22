@@ -1,6 +1,7 @@
 package org;
 import java.io.IOException;
 
+import org.db.AccountRecorder;
 import org.proxy.ProxyLoader;
 import org.sikuli.api.DesktopScreenRegion;
 import org.sikuli.api.ScreenRegion;
@@ -48,11 +49,6 @@ public class AccountCreator
 		return false;
 	}
 	
-	public boolean report()
-	{
-		return false;
-	}
-	
 	public void storeLocally()
 	{
 		new AccountRecorder().recordAccount(email, password);
@@ -66,6 +62,7 @@ public class AccountCreator
 		try
 		{
 			Runtime.getRuntime().exec("taskkill /F /IM RuneScape.exe");
+			Runtime.getRuntime().exec("taskkill /F /IM GamePanel.exe");
 			Runtime.getRuntime().exec("taskkill /F /IM rs2client.exe");
 		}
 		catch(IOException e)

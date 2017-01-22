@@ -3,8 +3,8 @@ package org.worker.impl.nxt;
 import java.awt.image.BufferedImage;
 
 import org.AccountCreator;
-import org.RunescapeAccount;
 import org.Utils;
+import org.account.RunescapeAccount;
 import org.sikuli.api.Relative;
 import org.sikuli.api.ScreenLocation;
 import org.sikuli.api.ScreenRegion;
@@ -22,6 +22,7 @@ public class EnlistCharacter implements Worker
 	private static BufferedImage playNowButton = Utils.websiteUrl("playNow.png");
 	private static BufferedImage failureLabel = Utils.websiteUrl("cooldown.png");
 	private static BufferedImage lobbyLabel = Utils.websiteUrl("lobby.png");
+	private static BufferedImage emailVerification = Utils.websiteUrl("emailVerification.png");
 	
 	private boolean success;
 	private RunescapeAccount account = new RunescapeAccount();
@@ -36,7 +37,8 @@ public class EnlistCharacter implements Worker
 		AccountCreator.mouse.click(randomName.getCenter());
 		
 		//fill fields
-		if(!fill(ageLabel, ""+account.getAge()) || !fill(emailLabel, account.getEmail()) 
+		if(!fill(ageLabel, ""+account.getAge()) 
+				|| !fill(emailLabel, account.getEmail()) || (Utils.waitFor(emailVerification, 3000) == null)
 				|| !fill(passwordLabel, account.getPassword()))
 			return;
 		
@@ -61,6 +63,12 @@ public class EnlistCharacter implements Worker
 			AccountCreator.password = account.getPassword();
 		}
 	}
+	
+	private void waitMs(long ms)
+	{
+		try	{ Thread.sleep(ms); }
+		catch(InterruptedException e) { e.printStackTrace(); }
+	}
 
 	@Override
 	public Worker branch()
@@ -77,10 +85,10 @@ public class EnlistCharacter implements Worker
 		ScreenLocation toClick = Relative.to(r.getCenter()).right(90).getScreenLocation();
 		AccountCreator.mouse.doubleClick(toClick);
 		
-		try	{ Thread.sleep(450); }
-		catch(InterruptedException e) { e.printStackTrace(); }
+		waitMs(150);
 		
 		AccountCreator.keyboard.type(s);
+		
 		return true;
 	}
 	

@@ -1,10 +1,16 @@
 package org;
+
+import org.db.DBManager;
+import org.db.LocalAccountMerger;
+
 public class Main
 {
-
 	public static void main(String[] args) throws InterruptedException
 	{
-		LocalAccountMerger merger = new LocalAccountMerger();
+		DBManager db = new DBManager();
+		System.out.println(db.initialize() ? "Successfully connected to Orion database" : "Could not connect to Orion database");
+		
+		LocalAccountMerger merger = new LocalAccountMerger(db);
 		
 		while(true)
 		{
@@ -16,7 +22,7 @@ public class Main
 			AccountCreator c = new AccountCreator();
 			if(c.create())
 			{
-				if(c.report())
+				if(db.report(AccountCreator.email, AccountCreator.password))
 					System.out.println("Successfully stored account in database");
 				else
 				{

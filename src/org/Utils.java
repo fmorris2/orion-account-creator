@@ -66,7 +66,7 @@ public class Utils
 	
 	public static ScreenRegion waitFor(BufferedImage image, int timeout)
 	{
-		return waitFor(image, timeout, 0.7);
+		return waitFor(image, timeout, 0.9);
 	}
 	
 	public static ScreenRegion waitFor(BufferedImage image, int timeout, double threshold)

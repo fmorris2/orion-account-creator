@@ -1,4 +1,4 @@
-package org;
+package org.db;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
