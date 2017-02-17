@@ -34,7 +34,7 @@ public class EnlistCharacter implements Worker
 		ScreenRegion randomName = Utils.waitFor(randomNameButton, AccountCreator.GENERAL_WAIT_TIME, 0.95);
 		if(randomName == null)
 			return;
-		AccountCreator.mouse.click(randomName.getCenter());
+		Utils.click(randomName.getCenter());
 		
 		//fill fields
 		if(!fill(ageLabel, ""+account.getAge()) 
@@ -46,7 +46,7 @@ public class EnlistCharacter implements Worker
 		ScreenRegion playNow = Utils.waitFor(playNowButton, AccountCreator.GENERAL_WAIT_TIME);
 		if(playNow == null)
 			return;
-		AccountCreator.mouse.click(playNow.getCenter());
+		Utils.click(playNow.getCenter());
 		
 		//verify account has been created
 		ScreenRegion lobby = Utils.waitFor(lobbyLabel, LOBBY_WAIT_TIME);

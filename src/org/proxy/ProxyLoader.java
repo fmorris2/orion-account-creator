@@ -29,7 +29,32 @@ public class ProxyLoader
 			if(p != null)
 				return p;
 		}
-		return null;
+		
+		ProxyRotator proxy = new CoolProxy();
+		
+		while(true)
+		{
+			try
+			{
+				if(!proxy.grabInfo())
+				{
+					if(proxy instanceof ProxySpider)
+					{
+						System.out.println("ProxySpider proxies exhausted.... Falling back to CoolProxies");
+						proxy = new CoolProxy();
+					}
+				}
+				
+				if(proxy.getIP() != null)
+					break;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		return proxy;
 	}
 	
 	private void loadProxies()
@@ -46,7 +71,11 @@ public class ProxyLoader
 			while((line = br.readLine()) != null)
 			{
 				String[] parts = line.split(":");
-				addProxy(new Proxy(parts[0], parts[1]));
+				if(parts.length > 2)
+					addProxy(new Proxy(parts[0], parts[1], parts[2], parts[3]));
+				else
+					addProxy(new Proxy(parts[0], parts[1], null, null));
+				
 				totalProxies++;
 			}
 		}

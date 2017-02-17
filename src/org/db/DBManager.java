@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.AccountCreator;
+import org.Utils;
+
 public class DBManager
 {
 	private static final String DB_NAME = "orion";
@@ -15,7 +18,8 @@ public class DBManager
 	private static final String PASSWORD = "diesonne30";
 	
 	private static final int CONNECTION_TIMEOUT = 10000;
-	private static final String INSERT_NEW_ACC = "INSERT INTO account (email, password) VALUES (?, ?)";
+	private static final String INSERT_NEW_ACC = "INSERT INTO account (email, password, creation_proxy_ip, creation_proxy_port, "
+			+ "creation_proxy_user, creation_proxy_pass, bedtime_hour) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	
 	private Connection connection;
 	private PreparedStatement statement;
@@ -54,6 +58,11 @@ public class DBManager
 			
 			statement.setString(1,  email);
 			statement.setString(2, pass);
+			statement.setString(3, AccountCreator.proxyIp);
+			statement.setString(4, AccountCreator.proxyPort);
+			statement.setString(5, AccountCreator.proxyUser);
+			statement.setString(6, AccountCreator.proxyPass);
+			statement.setInt(7, Utils.random(0, 23));
 			statement.execute();
 			return true;
 		}

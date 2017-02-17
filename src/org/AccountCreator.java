@@ -19,7 +19,7 @@ public class AccountCreator
 	public static Mouse mouse = new DesktopMouse();
 	public static DesktopKeyboard keyboard = new DesktopKeyboard();
 	
-	public static String email, password;
+	public static String email, password, proxyIp, proxyPort, proxyUser, proxyPass;
 	public static Process socksCap;
 	public static ProxyLoader proxies = new ProxyLoader();
 	
@@ -32,6 +32,10 @@ public class AccountCreator
 		email = null;
 		password = null;
 		socksCap = null;
+		proxyIp = null;
+		proxyPort = null;
+		proxyUser = null;
+		proxyPass = null;
 	}
 	
 	public boolean create()
@@ -51,7 +55,7 @@ public class AccountCreator
 	
 	public void storeLocally()
 	{
-		new AccountRecorder().recordAccount(email, password);
+		new AccountRecorder().recordAccount(email, password, proxyIp, proxyPort, proxyUser, proxyPass);
 	}
 	
 	public void killProcesses()
@@ -64,6 +68,7 @@ public class AccountCreator
 			Runtime.getRuntime().exec("taskkill /F /IM RuneScape.exe");
 			Runtime.getRuntime().exec("taskkill /F /IM GamePanel.exe");
 			Runtime.getRuntime().exec("taskkill /F /IM rs2client.exe");
+			Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
 		}
 		catch(IOException e)
 		{

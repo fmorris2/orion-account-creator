@@ -2,7 +2,6 @@ package org.worker.impl.nxt;
 
 import java.awt.image.BufferedImage;
 
-import org.AccountCreator;
 import org.Utils;
 import org.sikuli.api.ScreenRegion;
 import org.worker.Worker;
@@ -26,7 +25,7 @@ public class CreateAccount implements Worker
 		
 		System.out.println("Create account button found... clicking on it");
 		
-		AccountCreator.mouse.click(accButton.getCenter());
+		Utils.click(accButton.getCenter());
 		
 		ScreenRegion done = Utils.waitFor(doneButton, DONE_BUTTON_WAIT_TIME, 0.9);
 		if(done == null)
@@ -34,7 +33,7 @@ public class CreateAccount implements Worker
 		
 		System.out.println("Done button found... clicking on it");
 		
-		AccountCreator.mouse.click(done.getCenter());
+		Utils.click(done.getCenter());
 		success = true;
 	}
 

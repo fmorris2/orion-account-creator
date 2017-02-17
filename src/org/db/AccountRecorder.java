@@ -22,11 +22,11 @@ public class AccountRecorder
 		}
 	}
 	
-	public void recordAccount(String email, String password)
+	public void recordAccount(String email, String password, String ip, String port, String user, String pass)
 	{
 		try
 		{
-			bufferedWriter.write(email + ":" + password);
+			bufferedWriter.write(email + ":" + password + ":" + ip + ":" + port + ":" + user + ":" + pass);
 			bufferedWriter.newLine();
 			bufferedWriter.flush();
 		}

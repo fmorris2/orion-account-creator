@@ -1,5 +1,8 @@
 package org;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +12,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
@@ -17,6 +21,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.sikuli.api.ImageTarget;
+import org.sikuli.api.ScreenLocation;
 import org.sikuli.api.ScreenRegion;
 import org.sikuli.api.Target;
 
@@ -39,6 +44,28 @@ public class Utils
 		}
 		
 		return null;
+	}
+	
+	public static void click(ScreenLocation loc)
+	{
+		click(loc.getX(), loc.getY());
+	}
+	
+	public static void click(int x, int y)
+	{
+		try
+		{
+			System.out.println("Clicking ("+x+", "+y+")");
+			Robot bot = new Robot();
+			bot.mouseMove(x, y);    
+			bot.mousePress(InputEvent.BUTTON1_MASK);
+			bot.setAutoDelay(50);
+			bot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		catch(AWTException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static BufferedImage websiteUrl(String fileName)
@@ -117,6 +144,11 @@ public class Utils
 		{
 			e.printStackTrace();
 		} 
+	}
+	
+	public static int random(int min, int max)
+	{
+		return ThreadLocalRandom.current().nextInt(min, max + 1);
 	}
 	
 	private static TrustManager[] getTrustManager()

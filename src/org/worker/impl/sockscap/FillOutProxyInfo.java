@@ -2,6 +2,7 @@ package org.worker.impl.sockscap;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.net.InetAddress;
 
 import org.AccountCreator;
 import org.Utils;
@@ -12,7 +13,7 @@ import org.worker.Worker;
 
 public class FillOutProxyInfo implements Worker
 {	
-	private static BufferedImage targ = Utils.websiteUrl("proxyRowIcon.png");
+	private static BufferedImage targ = Utils.websiteUrl("localSocks.png");
 	//private Target portXTarg = new ImageTarget(Utils.fileUrl("images/proxyPortX.png"));
 	private static BufferedImage proxySaveTarg = Utils.websiteUrl("proxySaveButton.png");
 	
@@ -50,19 +51,28 @@ public class FillOutProxyInfo implements Worker
 			
 			proxy = AccountCreator.proxies.getProxy();
 		}
+		
+		AccountCreator.proxyIp = proxy.getIP();
+		AccountCreator.proxyPort = proxy.getPort();
+		AccountCreator.proxyUser = proxy.getUser();
+		AccountCreator.proxyPass = proxy.getPass();
 
 		
 		//IP
 		try
 		{
-			ScreenRegion ipBox = Relative.to(rowIcon).right(50).getScreenRegion();
-			AccountCreator.mouse.click(ipBox.getCenter()); //click on it
-			AccountCreator.mouse.doubleClick(ipBox.getCenter()); //get box in input mode
-			AccountCreator.keyboard.keyDown(KeyEvent.VK_CONTROL);
-			AccountCreator.keyboard.keyDown(KeyEvent.VK_A);
-			AccountCreator.keyboard.keyUp(KeyEvent.VK_A);
-			AccountCreator.keyboard.keyUp(KeyEvent.VK_CONTROL);
-			AccountCreator.keyboard.type(proxy.getIP());
+			ScreenRegion ipBox = Relative.to(rowIcon).below(25).getScreenRegion();
+			String resolvedIp = InetAddress.getByName(proxy.getIP()).getHostAddress();
+			clickAndType(ipBox, resolvedIp);
+			
+			ScreenRegion portBox = Relative.to(ipBox).right(130).getScreenRegion();
+			clickAndType(portBox, proxy.getPort());
+			
+			ScreenRegion userBox = Relative.to(portBox).right(100).getScreenRegion();
+			clickAndType(userBox, proxy.getUser() == null ? " " : proxy.getUser());
+			
+			ScreenRegion passBox = Relative.to(userBox).right(100).getScreenRegion();
+			clickAndType(passBox, proxy.getPass() == null ? " " : proxy.getPass());
 		}
 		catch(Exception e)
 		{
@@ -79,9 +89,22 @@ public class FillOutProxyInfo implements Worker
 		*/
 		
 		//SAVE BUTTON
-		AccountCreator.mouse.click(saveButton.getCenter());
+		Utils.click(saveButton.getCenter());
 		
 		success = true;
+	}
+	
+	private void clickAndType(ScreenRegion r, String s)
+	{
+		Utils.click(r.getCenter()); //click on it
+		AccountCreator.mouse.doubleClick(r.getCenter()); //get box in input mode
+		AccountCreator.keyboard.keyDown(KeyEvent.VK_CONTROL);
+		AccountCreator.keyboard.keyDown(KeyEvent.VK_A);
+		AccountCreator.keyboard.keyUp(KeyEvent.VK_A);
+		AccountCreator.keyboard.keyUp(KeyEvent.VK_CONTROL);
+		AccountCreator.keyboard.type(s);
+		AccountCreator.keyboard.keyDown(KeyEvent.VK_ENTER);
+		AccountCreator.keyboard.keyUp(KeyEvent.VK_ENTER);
 	}
 
 	@Override

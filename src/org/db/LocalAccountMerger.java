@@ -29,6 +29,10 @@ public class LocalAccountMerger
 				String[] parts = line.split(":");
 				db.getStatement().setString(1, parts[0]);
 				db.getStatement().setString(2, parts[1]);
+				db.getStatement().setString(3, parts[2]);
+				db.getStatement().setString(4, parts[3]);
+				db.getStatement().setString(5, parts[4]);
+				db.getStatement().setString(6, parts[5]);
 				db.getStatement().addBatch();
 				numAccounts++;
 			}

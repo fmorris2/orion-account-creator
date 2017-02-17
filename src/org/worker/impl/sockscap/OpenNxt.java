@@ -10,7 +10,7 @@ import org.worker.impl.nxt.CreateAccount;
 
 public class OpenNxt implements Worker
 {
-	private static final int NXT_WAIT_TIME = 20000;
+	private static final int NXT_WAIT_TIME = 30000;
 	private static final int FAILED_WAIT_TIME = 7500;
 	
 	private static BufferedImage nxtIconTarg = Utils.websiteUrl("nxtIcon.png");
@@ -20,7 +20,7 @@ public class OpenNxt implements Worker
 	@Override
 	public void execute()
 	{
-		ScreenRegion nxtIcon = Utils.waitFor(nxtIconTarg, AccountCreator.GENERAL_WAIT_TIME);
+		ScreenRegion nxtIcon = Utils.waitFor(nxtIconTarg, AccountCreator.GENERAL_WAIT_TIME, .75);
 		if(nxtIcon == null)
 			return;
 		

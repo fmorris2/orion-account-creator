@@ -22,7 +22,7 @@ public class ClickProxyButton implements Worker
 	public Worker branch()
 	{
 		System.out.println("Searching for proxy button...");
-		ScreenRegion result = Utils.waitFor(targ, AccountCreator.GENERAL_WAIT_TIME, 0.8);
+		ScreenRegion result = Utils.waitFor(targ, AccountCreator.GENERAL_WAIT_TIME, 0.5);
 		
 		if(result != null && clickProxyButton(result))
 			return new FillOutProxyInfo();
@@ -33,8 +33,9 @@ public class ClickProxyButton implements Worker
 	
 	private boolean clickProxyButton(ScreenRegion region)
 	{
-		Mouse mouse = new DesktopMouse();
-		mouse.click(region.getCenter());
+		System.out.println("Click proxy button");
+		System.out.println("Region: " + region);
+		Utils.click(region.getCenter());
 		
 		return Utils.waitFor(proxyWindow, AccountCreator.GENERAL_WAIT_TIME) != null;
 	}
